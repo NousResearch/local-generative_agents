@@ -24,7 +24,6 @@ model_norm = HuggingFaceBgeEmbeddings(
     encode_kwargs=encode_kwargs
 )
 
-openai.api_key = openai_api_key
 llm = TextGen(model_url='https://fotos-sand-avi-cloth.trycloudflare.com', max_context_length=2048, max_length=100)
 
 def temp_sleep(seconds=0.1):

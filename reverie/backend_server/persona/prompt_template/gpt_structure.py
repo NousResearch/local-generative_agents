@@ -1,23 +1,31 @@
 """
 Author: Joon Sung Park (joonspk@stanford.edu)
+Fork Author: Poppy (stupiddumbcat on Discord)
 
 File: gpt_structure.py
-Description: Wrapper functions for calling OpenAI APIs.
-
-Fork Author: Poppy (stupiddumbcat on Discord)
+Description: Wrapper functions for calling local model APIs. 
 Allows for running local models using the TextGen (Oobabooga TextGen) wrapper. Easily changeable to use the KoboldAIApi wrapper.
 """
 import json
 import random
 import langchain
 from langchain.llms import TextGen
-import time 
-import openai
+from langchain.embeddings import HuggingFaceBgeEmbeddings
+import time
 
 from utils import *
 
+model_name = "BAAI/bge-small-en"
+model_kwargs = {'device': 'cuda'}
+encode_kwargs = {'normalize_embeddings': True} # set True to compute cosine similarity
+model_norm = HuggingFaceBgeEmbeddings(
+    model_name=model_name,
+    model_kwargs=model_kwargs,
+    encode_kwargs=encode_kwargs
+)
+
 openai.api_key = openai_api_key
-llm = TextGen(model_url='https://condo-exams-packaging-ecuador.trycloudflare.com', max_context_length=2048, max_length=100)
+llm = TextGen(model_url='https://fotos-sand-avi-cloth.trycloudflare.com', max_context_length=2048, max_length=100)
 
 def temp_sleep(seconds=0.1):
   time.sleep(seconds)
@@ -276,12 +284,12 @@ def safe_generate_response(prompt,
   return fail_safe_response
 
 
-def get_embedding(text, model="text-embedding-ada-002"):
+def get_embedding(text, model="BAAI/bge-large-en"):
   text = text.replace("\n", " ")
   if not text: 
     text = "this is blank"
-  return openai.Embedding.create(
-          input=[text], model=model)['data'][0]['embedding']
+    embeddedings = embeddings_model.embed_query(text)
+    return embeddings
 
 
 if __name__ == '__main__':
